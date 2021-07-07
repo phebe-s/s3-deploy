@@ -1041,9 +1041,10 @@ async function run() {
     const invalidation = core.getInput('invalidation') || '/';
     const deleteRemoved = core.getInput('delete-removed') || false;
     const noCache = getBooleanInput('no-cache');
-    const private = getBooleanInput('private');
+    const isPrivate = getBooleanInput('private');
+    const cacheControl = getInput('cache-control');
 
-    await deploy({ folder, bucket, bucketRegion, distId, invalidation, deleteRemoved, noCache, private });
+    await deploy({ folder, bucket, bucketRegion, distId, invalidation, deleteRemoved, noCache, isPrivate, cacheControl });
   } catch (error) {
     core.setFailed(error.message);
   }
@@ -1076,7 +1077,7 @@ const exec = __webpack_require__(986);
 
 let deploy = function (params) {
   return new Promise((resolve, reject) => {
-    const { folder, bucket, bucketRegion, distId, invalidation, deleteRemoved, noCache, private } = params;
+    const { folder, bucket, bucketRegion, distId, invalidation, deleteRemoved, noCache, isPrivate, cacheControl } = params;
 
     const distIdArg = distId ? `--distId ${distId}` : '';
     const invalidationArg = distId ? `--invalidate "${invalidation}"` : '';
@@ -1087,7 +1088,8 @@ let deploy = function (params) {
           : `--deleteRemoved ${deleteRemoved}`
         : '';
     const noCacheArg = noCache ? '--noCache' : '';
-    const privateArg = private ? '--private' : '';
+    const privateArg = isPrivate ? '--private' : '';
+    const cacheControlArg = cacheControl ? `--cacheControl "${cacheControl}"` : '';
 
     try {
       const command = `npx s3-deploy@1.4.0 ./** \
@@ -1100,7 +1102,8 @@ let deploy = function (params) {
                         ${invalidationArg} \
                         ${deleteRemovedArg} \
                         ${noCacheArg} \
-                        ${privateArg} `;
+                        ${privateArg} \
+                        ${cacheControlArg} `;
 
       const cwd = path.resolve(folder);
       exec.exec(command, [], { cwd }).then(resolve).catch(reject);

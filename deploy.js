@@ -3,7 +3,7 @@ const exec = require('@actions/exec');
 
 let deploy = function (params) {
   return new Promise((resolve, reject) => {
-    const { folder, bucket, bucketRegion, distId, invalidation, deleteRemoved, noCache, private } = params;
+    const { folder, bucket, bucketRegion, distId, invalidation, deleteRemoved, noCache, isPrivate, cacheControl } = params;
 
     const distIdArg = distId ? `--distId ${distId}` : '';
     const invalidationArg = distId ? `--invalidate "${invalidation}"` : '';
@@ -14,7 +14,8 @@ let deploy = function (params) {
           : `--deleteRemoved ${deleteRemoved}`
         : '';
     const noCacheArg = noCache ? '--noCache' : '';
-    const privateArg = private ? '--private' : '';
+    const privateArg = isPrivate ? '--private' : '';
+    const cacheControlArg = cacheControl ? `--cacheControl "${cacheControl}"` : '';
 
     try {
       const command = `npx s3-deploy@1.4.0 ./** \
@@ -27,7 +28,8 @@ let deploy = function (params) {
                         ${invalidationArg} \
                         ${deleteRemovedArg} \
                         ${noCacheArg} \
-                        ${privateArg} `;
+                        ${privateArg} \
+                        ${cacheControlArg} `;
 
       const cwd = path.resolve(folder);
       exec.exec(command, [], { cwd }).then(resolve).catch(reject);

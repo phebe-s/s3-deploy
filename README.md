@@ -1,5 +1,7 @@
 # AWS S3 Deploy GitHub Action
 
+This is forked from https://github.com/Reggionick/s3-deploy.
+
 ### Easily deploy a static website to AWS S3 and invalidate CloudFront distribution
 
 This action is based on the work done by import-io on [s3-deploy](https://github.com/import-io/s3-deploy#readme).
@@ -9,7 +11,7 @@ This action is based on the work done by import-io on [s3-deploy](https://github
 You can use this action by referencing the v3 branch
 
 ```yaml
-uses: reggionick/s3-deploy@v3
+uses: phebe-s/s3-deploy@v3
 with:
     folder: build
     bucket: ${{ secrets.S3_BUCKET }}
@@ -30,6 +32,7 @@ Input              | Type             | Required | Default      | Description
 | `delete-removed` | boolean / string | No       | false        | Removes files in S3, that are not available in the local copy of the directory 
 | `noCache`        | boolean          | No       | false        | Use this parameter to specify `Cache-Control: no-cache, no-store, must-revalidate` header 
 | `private`        | boolean          | No       | false        | Upload files with private ACL, needed for S3 static website hosting
+|  `cache-control` | string           | No       | undefined    | Use this parameter to specify a custom Cache-Control header
 
 
 ### Example `workflow.yml` with S3 Deploy Action
