@@ -1042,7 +1042,7 @@ async function run() {
     const deleteRemoved = core.getInput('delete-removed') || false;
     const noCache = getBooleanInput('no-cache');
     const isPrivate = getBooleanInput('private');
-    const cacheControl = getInput('cache-control');
+    const cacheControl = core.getInput('cache-control');
 
     await deploy({ folder, bucket, bucketRegion, distId, invalidation, deleteRemoved, noCache, isPrivate, cacheControl });
   } catch (error) {
